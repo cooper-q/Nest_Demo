@@ -7,9 +7,10 @@ import {CatsModule} from "./cats/cats.module";
 // import {LoggerMiddleware} from "./common/middleware/logger.middleware";
 import {logger} from "./common/middleware/logger.middleware"
 import {CatsController} from "./cats/cats.controller";
-import {APP_FILTER} from "@nestjs/core";
+import {APP_FILTER, APP_PIPE} from "@nestjs/core";
 import {HttpExceptionFilter} from "./common/http-exception.filter";
 import {AllExceptionsFilter} from "./common/all-exceptions.filter";
+import {ValidationPipe} from "./common/pip/validate.pip";
 
 @Module({
     imports: [CatsModule],
@@ -20,6 +21,9 @@ import {AllExceptionsFilter} from "./common/all-exceptions.filter";
     }, {
         provide: APP_FILTER,
         useClass: AllExceptionsFilter
+    }, {
+        provide: APP_PIPE,
+        useClass: ValidationPipe
     }]
 })
 export class AppModule implements NestModule {
