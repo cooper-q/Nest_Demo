@@ -8,7 +8,7 @@ import {
     HttpStatus,
     HttpException,
     UseFilters,
-    UsePipes, Param, Query
+    UsePipes, Param, Query, UseGuards, SetMetadata
 } from "@nestjs/common";
 
 import {Request, Response} from "express";
@@ -21,9 +21,12 @@ import {JoiValidatePip} from "../common/pip/joi.validate.pip";
 import {ValidationPipe} from "../common/pip/validate.pip";
 import {get} from "http";
 import {ParseIntPip} from "../common/pip/parse-int.pip";
+import {RolesGuard} from "../common/guard/roles.guard";
+import {Roles} from "../common/decorator/roles.decorator";
 
 
 @Controller("cats")
+@UseGuards(RolesGuard)
 // @UseFilters(HttpExceptionFilter)
 export class CatsController {
     constructor(private readonly catService: CatsService) {
@@ -88,5 +91,12 @@ export class CatsController {
     @Get('testparseint')
     findOne(@Query('id', new ParseIntPip()) id) {
         return this.catService.findOne(id);
+    }
+
+    @Post('roles')
+    // @SetMetadata('roles', ['admin'])
+    @Roles('admin')
+    async createRole(@Body() createCatDto: CreateCatDto) {
+        this.catService.create(createCatDto);
     }
 }
