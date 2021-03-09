@@ -8,7 +8,7 @@ import {
     HttpStatus,
     HttpException,
     UseFilters,
-    UsePipes
+    UsePipes, Param, Query
 } from "@nestjs/common";
 
 import {Request, Response} from "express";
@@ -19,6 +19,8 @@ import {ForbiddenException} from "../common/forbidden.exception";
 import {HttpExceptionFilter} from "../common/http-exception.filter";
 import {JoiValidatePip} from "../common/pip/joi.validate.pip";
 import {ValidationPipe} from "../common/pip/validate.pip";
+import {get} from "http";
+import {ParseIntPip} from "../common/pip/parse-int.pip";
 
 
 @Controller("cats")
@@ -55,7 +57,7 @@ export class CatsController {
     }
 
     @Get("profile")
-    async findOne(@Res() res: Response) {
+    async findOne2(@Res() res: Response) {
         res.status(HttpStatus.OK).json([]);
     }
 
@@ -81,5 +83,10 @@ export class CatsController {
         console.log('createCatDto:', createCatDto)
         this.catService.create(createCatDto)
         res.status(HttpStatus.OK).json([]);
+    }
+
+    @Get('testparseint')
+    findOne(@Query('id', new ParseIntPip()) id) {
+        return this.catService.findOne(id);
     }
 }
