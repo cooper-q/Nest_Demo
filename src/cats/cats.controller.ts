@@ -8,7 +8,7 @@ import {
     HttpStatus,
     HttpException,
     UseFilters,
-    UsePipes, Param, Query, UseGuards, SetMetadata
+    UsePipes, Param, Query, UseGuards, SetMetadata, UseInterceptors
 } from "@nestjs/common";
 
 import {Request, Response} from "express";
@@ -23,10 +23,13 @@ import {get} from "http";
 import {ParseIntPip} from "../common/pip/parse-int.pip";
 import {RolesGuard} from "../common/guard/roles.guard";
 import {Roles} from "../common/decorator/roles.decorator";
+import {LoggingInterceptor} from "../common/interceptor/logging.interceptor";
+import {User} from "../common/decorator/user.decorator";
 
 
 @Controller("cats")
 @UseGuards(RolesGuard)
+// @UseInterceptors(LoggingInterceptor)
 // @UseFilters(HttpExceptionFilter)
 export class CatsController {
     constructor(private readonly catService: CatsService) {
@@ -48,8 +51,7 @@ export class CatsController {
     @UseFilters(new HttpExceptionFilter())
     async create(@Body() createCatDto: CreateCatDto, @Res() res: Response) {
         this.catService.create(createCatDto);
-        res.send("111");
-        // res.status(HttpStatus.OK).send(200);
+        res.status(HttpStatus.OK).send(200);
     }
 
     @Post('/postFilters')
@@ -96,7 +98,20 @@ export class CatsController {
     @Post('roles')
     // @SetMetadata('roles', ['admin'])
     @Roles('admin')
-    async createRole(@Body() createCatDto: CreateCatDto) {
+    // @UsePipes(ValidationPipe)
+    async createRole(@Body() createCatDto: CreateCatDto, @Res() res: Response) {
         this.catService.create(createCatDto);
+        res.status(HttpStatus.OK).json([]);
+    }
+
+    @Get('userDec')
+    // @UsePipes(ValidationPipe)
+    async findOneOne(@User() createCatDto: CreateCatDto) {
+        console.log(createCatDto)
+    }
+
+    @Get('findone')
+    async findOneParam(@User(new ValidationPipe()) createCatDto: CreateCatDto) {
+        console.log(createCatDto)
     }
 }

@@ -9,4 +9,7 @@ export class CreateCatDto {
 
     @IsString()
     breed: string;
+
+    @IsString()
+    user: string;
 }
