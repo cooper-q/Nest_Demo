@@ -25,6 +25,7 @@ import {RolesGuard} from "../common/guard/roles.guard";
 import {Roles} from "../common/decorator/roles.decorator";
 import {LoggingInterceptor} from "../common/interceptor/logging.interceptor";
 import {User} from "../common/decorator/user.decorator";
+import {ConfigService} from "../config/config.service";
 
 
 @Controller("cats")
@@ -32,7 +33,7 @@ import {User} from "../common/decorator/user.decorator";
 // @UseInterceptors(LoggingInterceptor)
 // @UseFilters(HttpExceptionFilter)
 export class CatsController {
-    constructor(private readonly catService: CatsService) {
+    constructor(private readonly catService: CatsService, private readonly configService: ConfigService) {
     }
 
     @Get()
@@ -113,5 +114,11 @@ export class CatsController {
     @Get('findone')
     async findOneParam(@User(new ValidationPipe()) createCatDto: CreateCatDto) {
         console.log(createCatDto)
+    }
+
+    @Get('config')
+    testConfig() {
+        const data = this.configService.getConfig()
+        console.log('data:', data)
     }
 }
