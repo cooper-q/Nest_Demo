@@ -1,21 +1,32 @@
-import {Injectable} from "@nestjs/common";
+import {forwardRef, Inject, Injectable, OnModuleInit} from "@nestjs/common";
 import {Cat} from "./interfaces/cat.interface";
 import {ParseIntTest} from "./interfaces/paseInt.interface";
+import {CommonService} from "../common/common.service"
+import {ModuleRef} from "@nestjs/core";
+import {Service} from "ts-node";
 
 @Injectable()
 export class CatsService {
 
-    private readonly cats: Cat[] = [];
+	constructor(@Inject(forwardRef(() => CommonService)) private commonService: CommonService) {
 
-    create(cat: Cat) {
-        this.cats.push(cat);
-    }
+	}
 
-    findAll(): Cat[] {
-        return this.cats;
-    }
+	private readonly cats: Cat[] = [];
 
-    findOne(id: ParseIntTest) {
-        return id;
-    }
+	create(cat: Cat) {
+		this.cats.push(cat);
+	}
+
+	findAll(): Cat[] {
+		return this.cats;
+	}
+
+	findOne(id: ParseIntTest) {
+		return id;
+	}
+
+	findCommonGetName() {
+		return this.commonService.getName()
+	}
 }

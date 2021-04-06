@@ -5,4 +5,8 @@ export class ConfigService {
     getConfig = () => {
         return {a: 'config'}
     }
+
+    getConnect() {
+        return 'connect'
+    }
 }
